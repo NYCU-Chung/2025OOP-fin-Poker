@@ -5,6 +5,13 @@
 2. Morris-chi
 3. Minnie0803
 
+## Execute
+```
+$ make clean
+$ make all
+$ ./OOPPokerGame
+```
+
 ## Version
 - v1 - 202505250133
 - v2 - 202506030039
