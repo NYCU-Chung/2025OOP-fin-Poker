@@ -7,8 +7,6 @@
 
 ## Commit
 ```
-$ mkdir OOPPokerGame
-$ cd OOPPokerGame
 $ git clone https://github.com/NYCU-Chung/2025OOP-fin-Poker
 ```
 
