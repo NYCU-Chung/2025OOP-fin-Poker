@@ -11,11 +11,13 @@ public:
     Player(const string &n);
     const string& name() const;
     const int score() const;
+    const int play() const;
+    const int discard() const;
     Hand& hand();
     void resetStats();
-    void recordPlay(int count);
+    void recordPlay();
     void recordScore(int sc);
-    void recordDiscard(int count);
+    void recordDiscard();
     void recordPlayType(const vector<Card>& play);
     void printStats() const;
 private:

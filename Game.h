@@ -1,6 +1,5 @@
 #ifndef GAME_H
 #define GAME_H
-#include "Deck.h"
 #include "Player.h"
 #include "include/json.hpp"
 

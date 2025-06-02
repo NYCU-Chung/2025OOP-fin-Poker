@@ -1,6 +1,6 @@
 [
   {
-    "maxScore": 62,
+    "maxScore": 735,
     "name": "Bob"
   },
   {
@@ -14,5 +14,9 @@
   {
     "maxScore": 91,
     "name": "bbb"
+  },
+  {
+    "maxScore": 5,
+    "name": "xyz"
   }
 ]

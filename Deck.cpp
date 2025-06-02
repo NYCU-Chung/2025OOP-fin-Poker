@@ -13,6 +13,7 @@ void Deck::shuffle() {
     std::shuffle(cards.begin(), cards.end(), rng);
 }
 Card Deck::draw() {
+    if(empty()) Deck();
     Card c = cards.back();
     cards.pop_back();
     return c;

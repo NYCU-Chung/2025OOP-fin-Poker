@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Deck.h"
 #include "ScoreCalculator.h"
 #include <bits/stdc++.h>
 
@@ -11,8 +12,11 @@ void Game::start() {
 }
 
 void Game::settingStage() {
+    system("clear");
     cout << "1. 登入\n2. 查看排行榜\n3. 登出\n4. 結束遊戲\n選擇: ";
     int choice; cin >> choice;
+    string s;
+    getline(cin, s);
     static Player p;
     if (choice == 1) {
         cout << "輸入玩家名稱: ";
@@ -21,6 +25,7 @@ void Game::settingStage() {
         playStage(p);
     } else if (choice == 2) {
         ShowLeaderBoard();
+        cout << "按下 Enter 繼續..."; getline(cin, s);
     } else if (choice == 3) {
         for(auto &d : data) {
             if(d["name"] == p.name()) {
@@ -43,37 +48,74 @@ void Game::playStage(Player &p) {
     // 發手牌
     for (int i = 0; i < 8; i++) p.hand().add(deck.draw());
     int playRounds = 0, discardRounds = 0;
+    string s;
     while (playRounds < 4 && !p.hand().getCards().empty()) {
-        cout << "手牌: ";
-        for (auto &c : p.hand().getCards()) cout << c.toString() << " ";
-        cout << "\n遊玩:1 出牌 2 棄牌 3 排序 4 結束回合\n選擇: ";
+        system("clear");
+        cout << "================================\n";
+        cout << "分數: " << p.score() << '\n';
+        cout << "累計出牌次數: " << p.play() << '\n';
+        cout << "累計棄牌次數: " << p.discard() << '\n';
+        cout << "================================\n";
+        cout << "手牌:\n";
+        for(int i=0;i<p.hand().getCards().size();i++) {
+            cout << '(' << i << ") " << p.hand().getCards()[i].toString() << '\n';
+        }
+        cout << "\n(1)出牌 (2)棄牌 (3)排序 (4)結束回合\n選擇: ";
         int c; cin >> c;
+        getline(cin, s);
         if (c == 1 && playRounds < 4) {
-            int k; cout << "出幾張(1-5): "; cin >> k;
+            cout << "輸入要出的牌的索引編號 (0-based): "; getline(cin, s);
+            stringstream ss(s);
+            vector<int> v;
             vector<Card> play;
-            for (int i = 0; i < k; i++) {
-                play.push_back(p.hand().getCards().back());
-                p.hand().removeAt(p.hand().getCards().size() - 1);
+            int id;
+            while(ss >> id) {
+                v.push_back(id);
+                play.push_back(p.hand().getCards()[id]);
             }
+            sort(v.begin(), v.end(), greater<int>());
+            for(int id : v) {
+                p.hand().removeAt(id);
+            }
+            cout << "本次牌型: " << ScoreCalculator::check(play) << "\n";
             int sc = ScoreCalculator::calculate(play);
             cout << "本次得分: " << sc << "\n";
-            p.recordPlay(k);
+            p.recordPlay();
             p.recordScore(sc);
             p.recordPlayType(play);
             playRounds++;
-        } else if (c == 2 && discardRounds < 3) {
-            int k; cout << "棄幾張(1-5): "; cin >> k;
-            for (int i = 0; i < k; i++) {
-                p.hand().removeAt(p.hand().getCards().size() - 1);
+            for (int i = 7-v.size(); i >= 0; i--) p.hand().removeAt(i);
+            for (int i = 0; i < 8; i++) p.hand().add(deck.draw());
+            cout << "按下 Enter 繼續..."; getline(cin, s);
+        } else if (c == 2) {
+            if(discardRounds == 3) {
+                cout << "已達到棄牌上限，按下 Enter 繼續..."; getline(cin, s);
+                continue;
             }
-            p.recordDiscard(k);
+            cout << "輸入要棄的牌的索引編號 (0-based): "; getline(cin, s);
+            stringstream ss(s);
+            vector<int> v;
+            vector<Card> play;
+            int id, k = 0;
+            while(ss >> id) v.push_back(id);
+            sort(v.begin(), v.end(), greater<int>());
+            for(int id : v) {
+                k++;
+                p.hand().removeAt(id);
+            }
+            for (int i = 0; i < k; i++) {
+                p.hand().add(deck.draw());
+            }
+            p.recordDiscard();
             discardRounds++;
         } else if (c == 3) {
-            cout << "排序:1 點數 2 花色: "; int m; cin >> m;
-            if (m == 1) p.hand().sortByValue(); else p.hand().sortBySuit();
+            cout << "(1)依點數排序 (2)依花色排序:\n選擇: "; int m; cin >> m;
+            if (m == 1) p.hand().sortByValue();
+            else p.hand().sortBySuit();
         } else break;
     }
     settlementStage(p);
+    cout << "按下 Enter 繼續..."; getline(cin, s);
 }
 
 void Game::ShowLeaderBoard() {
