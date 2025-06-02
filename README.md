@@ -5,8 +5,16 @@
 2. Morris-chi
 3. Minnie0803
 
+## Commit
+```
+$ mkdir OOPPokerGame
+$ cd OOPPokerGame
+$ git clone https://github.com/NYCU-Chung/2025OOP-fin-Poker
+```
+
 ## Execute
 ```
+$ cd 2025OOP-fin-Poker
 $ make clean
 $ make all
 $ ./OOPPokerGame
