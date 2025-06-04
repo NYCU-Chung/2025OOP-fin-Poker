@@ -5,6 +5,70 @@
 
 using namespace std;
 
+static void printCardsInTwoRows(const vector<Card>& cards) {
+    if (cards.size() < 8) {
+        cerr << "printCardsInTwoRows 需要至少 8 張卡片\n";
+        return;
+    }
+
+    // 先把前 8 張拆成上下各 4 張
+    vector<Card> top4(cards.begin(), cards.begin() + 4);
+    vector<Card> bot4(cards.begin() + 4, cards.begin() + 8);
+
+    // 取得每張卡的 ASCII 畫板 (每張 6 行)
+    vector<vector<string>> topArts, botArts;
+    topArts.reserve(4);
+    botArts.reserve(4);
+    for (int i = 0; i < 4; i++) {
+        topArts.push_back(top4[i].getAsciiArt());
+        botArts.push_back(bot4[i].getAsciiArt());
+    }
+
+    // 假定每張卡的寬度都相同，都等於 art[0].length()
+    int W = static_cast<int>(topArts[0][0].length());
+    const int CARD_HEIGHT = 6; // getAsciiArt() 會回傳 6 行
+
+    // ───── 上排 ASCII Art ─────
+    for (int row = 0; row < CARD_HEIGHT; row++) {
+        for (int c = 0; c < 4; c++) {
+            cout << topArts[c][row] << "  ";
+        }
+        cout << "\n";
+    }
+    // 上排索引：0~3
+    for (int c = 0; c < 4; c++) {
+        string idxStr = "(" + to_string(c) + ")";
+        int padLeft  = (W - static_cast<int>(idxStr.length())) / 2;
+        int padRight = W - static_cast<int>(idxStr.length()) - padLeft;
+        cout << string(padLeft-5, ' ')
+             << idxStr
+             << string(padRight-5, ' ')
+             << "  ";
+    }
+    cout << "\n\n";
+
+    // ───── 下排 ASCII Art ─────
+    for (int row = 0; row < CARD_HEIGHT; row++) {
+        for (int c = 0; c < 4; c++) {
+            cout << botArts[c][row] << "  ";
+        }
+        cout << "\n";
+    }
+    // 下排索引：4~7
+    for (int c = 0; c < 4; c++) {
+        int idx = 4 + c;
+        string idxStr = "(" + to_string(idx) + ")";
+        int padLeft  = (W - static_cast<int>(idxStr.length())) / 2;
+        int padRight = W - static_cast<int>(idxStr.length()) - padLeft;
+        cout << string(padLeft-5, ' ')
+             << idxStr
+             << string(padRight-5, ' ')
+             << "  ";
+    }
+    cout << "\n";
+}
+
+
 void Game::start() {
     ifstream fin("players.json");
     data = json::parse(fin);
@@ -56,10 +120,18 @@ void Game::playStage(Player &p) {
         cout << "累計出牌次數: " << p.play() << '\n';
         cout << "累計棄牌次數: " << p.discard() << '\n';
         cout << "================================\n";
+        
+        // ─── 修改點：改用 ASCII Art 列印整副手牌 ───────────────────
         cout << "手牌:\n";
-        for(int i=0;i<p.hand().getCards().size();i++) {
-            cout << '(' << i << ") " << p.hand().getCards()[i].toString() << '\n';
+        vector<Card>& handCards = p.hand().getCards();
+        if (handCards.size() >= 8) {
+            printCardsInTwoRows(handCards);
+        } else {
+            // 若手牌未必有 8 張，可自行設計單排或其他顯示方式
+            printCardsInTwoRows(handCards);
         }
+        // ─────────────────────────────────────────────────────────
+
         cout << "\n(1)出牌 (2)棄牌 (3)排序 (4)結束回合\n選擇: ";
         int c; cin >> c;
         getline(cin, s);
