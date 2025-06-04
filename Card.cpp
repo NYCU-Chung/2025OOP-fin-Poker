@@ -18,7 +18,79 @@ string Card::toString() const {
     else if (value == 14) os << 'A';
     return os.str();
 }
+
 vector<string> Card::getAsciiArt() const {
+    const string emot = "  ฅ^•ﻌ•^ฅ  ";
+    const int width = 11; // 包含邊框 +---------+
+    const int innerW = width - 2;
+
+    // 數值字串
+    string val;
+    if (value >= 2 && value <= 10) val = to_string(value);
+    else if (value == 11) val = "J";
+    else if (value == 12) val = "Q";
+    else if (value == 13) val = "K";
+    else if (value == 14) val = "A";
+    else val = "?";
+
+    // 花色符號
+    static const char* suitsArr[] = {"♣", "♦", "♥", "♠"};
+    string raw_symbol = suitsArr[(int)suit];
+    string s_symbol = raw_symbol;
+
+    if (suit == Suit::Diamonds || suit == Suit::Hearts) {
+        s_symbol = "\033[31m" + raw_symbol + "\033[0m";
+    }
+
+    int symbol_display_len = 1; // 只顯示 1 個符號寬度，排版時就用這個
+
+    vector<string> art;
+    art.reserve(6);
+
+    // Line 1: 表情
+    art.push_back(emot);
+
+    // Line 2: 上框
+    art.push_back("+---------+");
+
+    // Line 3: 左上角數值
+    {
+        string line = "|";
+        line += val;
+        line += string(innerW - val.length(), ' ');
+        line += "|";
+        art.push_back(line);
+    }
+
+    // Line 4: 花色置中
+    {
+        int totalPad = innerW - symbol_display_len;
+        int leftPad = totalPad / 2;
+        int rightPad = totalPad - leftPad;
+
+        string line = "|";
+        line += string(leftPad, ' ') + s_symbol + string(rightPad, ' ');
+        line += "|";
+        art.push_back(line);
+    }
+
+    // Line 5: 右下角數值
+    {
+        string line = "|";
+        line += string(innerW - val.length(), ' ') + val;
+        line += "|";
+        art.push_back(line);
+    }
+
+    // Line 6: 下框
+    art.push_back("+---------+");
+
+    return art;
+}
+
+
+
+/*vector<string> Card::getAsciiArt() const {
     // 1. 新的表情
     const string emot = "ฅ^•ﻌ•^ฅ";
     int W = static_cast<int>(emot.length()); // 取 byte 長度作為總寬
@@ -43,6 +115,11 @@ vector<string> Card::getAsciiArt() const {
     // 3. 花色符號
     static const char* suitsArr[] = {"♣", "♦", "♥", "♠"};
     string s_symbol = suitsArr[(int)suit];
+
+    if (suit == Suit::Diamonds || suit == Suit::Hearts) {
+        s_symbol = string("") + "\033[31m" + s_symbol + "\033[0m";
+    }
+
 
     vector<string> art;
     art.reserve(6);
@@ -72,11 +149,11 @@ vector<string> Card::getAsciiArt() const {
     // 第五行：|        V|
     {
         int pad = innerW - static_cast<int>(val.length());
-        art.push_back(string("|") + string(pad-10, ' ') + val + string("|"));
+        art.push_back(string("|") + string(max(0, pad - 10), ' ') + val + string("|"));
     }
 
     // 第六行：同第二行
     art.push_back(string("+") + string(innerW-10, '-') + string("+"));
 
     return art;
-}
+}*/
