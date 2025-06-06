@@ -25,20 +25,25 @@ vector<string> Card::getAsciiArt() const {
     const int width = 11; // 包含邊框 +---------+
     const int innerW = width - 2;
 
-    // 數值字串
-    string val;
-    if (value >= 2 && value <= 10) val = to_string(value);
-    else if (value == 11) val = "J";
-    else if (value == 12) val = "Q";
-    else if (value == 13) val = "K";
-    else if (value == 14) val = "A";
-    else val = "?";
+    // 數值字串 (先存 raw_val，再決定是否要染色)
+    string raw_val;
+    if (value >= 2 && value <= 10) raw_val = to_string(value);
+    else if (value == 11) raw_val = "J";
+    else if (value == 12) raw_val = "Q";
+    else if (value == 13) raw_val = "K";
+    else if (value == 14) raw_val = "A";
+    else raw_val = "?";
 
-    // 花色符號
+    // 帶顏色的數值顯示字串 (若是紅心或菱形，就套 ANSI 紅色碼)
+    string display_val = raw_val;
+    if (suit == Suit::Hearts || suit == Suit::Diamonds) {
+        display_val = "\033[31m" + raw_val + "\033[0m";
+    }
+
+    // 花色符號 (紅心 & 菱形染紅，其餘保原色)
     static const char* suitsArr[] = {"♣", "♦", "♥", "♠"};
     string raw_symbol = suitsArr[(int)suit];
     string s_symbol = raw_symbol;
-
     if (suit == Suit::Diamonds || suit == Suit::Hearts) {
         s_symbol = "\033[31m" + raw_symbol + "\033[0m";
     }
@@ -54,11 +59,12 @@ vector<string> Card::getAsciiArt() const {
     // Line 2: 上框
     art.push_back("+---------+");
 
-    // Line 3: 左上角數值
+    // Line 3: 左上角數值 (使用 raw_val.length() 算 padding，但顯示 display_val)
     {
+        int raw_len = raw_val.length();
         string line = "|";
-        line += val;
-        line += string(innerW - val.length(), ' ');
+        line += display_val;
+        line += string(innerW - raw_len, ' ');
         line += "|";
         art.push_back(line);
     }
@@ -75,10 +81,11 @@ vector<string> Card::getAsciiArt() const {
         art.push_back(line);
     }
 
-    // Line 5: 右下角數值
+    // Line 5: 右下角數值 (同理，先算 raw_val.length()，顯示 display_val)
     {
+        int raw_len = raw_val.length();
         string line = "|";
-        line += string(innerW - val.length(), ' ') + val;
+        line += string(innerW - raw_len, ' ') + display_val;
         line += "|";
         art.push_back(line);
     }
@@ -88,6 +95,7 @@ vector<string> Card::getAsciiArt() const {
 
     return art;
 }
+
 
 
 

@@ -37,8 +37,8 @@ void Shop::visit(Player &p) {
 void Shop::showItems() {
     cout << "1. score x2    (價格 10)\n";
     cout << "2. change 3 cards to ♠    (價格 5)\n";
-    cout << "3. change 3 cards to ♥    (價格 5)\n";
-    cout << "4. change 3 cards to ♦    (價格 5)\n";
+    cout << "3. change 3 cards to \033[31m♥\033[0m    (價格 5)\n";
+    cout << "4. change 3 cards to \033[31m♦\033[0m    (價格 5)\n";
     cout << "5. change 3 cards to ♣    (價格 5)\n";
     cout << "6. copy 1 card     (價格 8)\n";
 }
