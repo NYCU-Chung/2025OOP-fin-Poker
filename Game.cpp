@@ -2,6 +2,10 @@
 #include "Game.h"
 #include "Deck.h"
 #include "ScoreCalculator.h"
+#include <vector>
+#include <string>
+#include <cstdlib>
+#include <ctime>
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -132,7 +136,40 @@ void Game::loginAndPlay() {
     int moneyAwarded = finalScore / 10;
     cout << "本局最終分數：" << finalScore << "，兌換遊戲幣：" << moneyAwarded << "\n";
     cout << "按 Enter 繼續...";
-    string s; getline(cin, s);
+    string s; 
+    getline(cin, s);
+    
+    system("clear");
+    
+    // ===== 新增：如果本局分數 > 700，就發放一包小禮包，並立即開出 3 張卡放到玩家 inventory =====
+    if (finalScore > 700) {
+        cout << "本局得分超過 700 分，獲得一包小禮包！\n";
+
+        // 1. 定義可隨機抽到的功能卡種類
+        vector<string> funcPool = {
+            "Score2x",
+            "Change3ToSpade",
+            "Change3ToHeart",
+            "Change3ToDiamond",
+            "Change3ToClub",
+            "Copy1Card"
+        };
+
+        // 2. 連抽 3 張（可重複），直接放到 Player::inventory
+        cout << "打開小禮包，獲得以下 3 張功能卡：\n";
+        for (int i = 0; i < 3; i++) {
+            int r = rand() % funcPool.size();
+            string chosen = funcPool[r];
+            p.addToInventory(chosen);           // 把卡放到 Player 物件的 vector<string> inventory
+            cout << "  第 " << (i + 1) << " 張：" << chosen << "\n";
+        }
+        // 3. 等待玩家看完
+        cout << "按 Enter 繼續...";
+        getline(cin, s);
+        
+        system("clear");
+    }
+    // ===== 新增結束 =====
 
     // 8. 更新 JSON 中這筆玩家的 money, maxScore, inventory
     //    a. money += moneyAwarded
@@ -265,12 +302,23 @@ void Game::playStage(Player &p) {
         if (inv.empty()) {
             cout << "  (空)\n";
         } else {
-            // 統計相同票券的數量
-            for (auto &it : inv) cnt[it]++;
-            int idx = 1;
-            for (auto &entry : cnt) {
-                cout << "  [" << idx++ << "] " 
-                     << entry.first << " × " << entry.second << "\n";
+            // 統計「不含換行」的項目
+            for (auto &it : inv) {
+                if (it.find('\n') != string::npos) {
+                    // 這筆字串含有 '\n'，視為 ASCII Art，跳過不列出
+                    continue;
+                }
+                cnt[it]++;
+            }
+            if (cnt.empty()) {
+                // 代表目前所有 inventory 都是 ASCII Art，沒有功能卡
+                cout << "  (僅含隱藏的文字拼圖，無功能卡可顯示)\n";
+            } else {
+                int idx = 1;
+                for (auto &entry : cnt) {
+                    cout << "  [" << idx++ << "] " 
+                         << entry.first << " × " << entry.second << "\n";
+                }
             }
         }
         cout << "-------------------------\n\n";
