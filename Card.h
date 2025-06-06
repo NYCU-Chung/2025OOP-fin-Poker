@@ -10,6 +10,7 @@ class Card {
 public:
     Card(Suit s, int v);
     Suit getSuit() const;
+    void setSuit(Suit s);
     int getValue() const;
     int getScore() const;
     int getScore(int v) const;

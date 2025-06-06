@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -std=c++14 -Wall -g
 
-SRCS = Card.cpp Deck.cpp Hands.cpp ScoreCalculator.cpp Player.cpp Game.cpp main.cpp
+SRCS = Card.cpp Deck.cpp Hands.cpp ScoreCalculator.cpp Shop.cpp Player.cpp Game.cpp main.cpp
 OBJS = $(SRCS:.cpp=.o)
 TARGET = OOPPokerGame
 

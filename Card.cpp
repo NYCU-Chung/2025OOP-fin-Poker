@@ -4,6 +4,7 @@ using namespace std;
 
 Card::Card(Suit s, int v): suit(s), value(v) {}
 Suit Card::getSuit() const { return suit; }
+void Card::setSuit(Suit s) { suit = s; }
 int Card::getValue() const { return value; }
 int Card::getScore() const { return (value == 14 ? 11 : (value >= 10 ? 10 : value)); }
 int Card::getScore(int v) const { return (v == 14 ? 11 : (v >= 10 ? 10 : v)); }

@@ -1,22 +1,14 @@
 [
   {
-    "maxScore": 735,
+    "inventory": [
+      "Change3ToSpade",
+      "Change3ToHeart",
+      "Change3ToDiamond",
+      "Copy1Card",
+      "Copy1Card"
+    ],
+    "maxScore": 1199,
+    "money": 174,
     "name": "Bob"
-  },
-  {
-    "maxScore": 120,
-    "name": "Alice"
-  },
-  {
-    "maxScore": 27,
-    "name": "aaa"
-  },
-  {
-    "maxScore": 91,
-    "name": "bbb"
-  },
-  {
-    "maxScore": 5,
-    "name": "xyz"
   }
 ]

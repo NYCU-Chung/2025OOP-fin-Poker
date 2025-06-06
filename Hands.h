@@ -11,6 +11,7 @@ public:
     vector<Card>& getCards();
     void sortByValue();
     void sortBySuit();
+    void clear();
 private:
     vector<Card> cards;
 };

@@ -15,3 +15,6 @@ void Hand::sortBySuit() {
         return a.getSuit() < b.getSuit();
     });
 }
+void Hand::clear() {
+    cards.clear();
+}
